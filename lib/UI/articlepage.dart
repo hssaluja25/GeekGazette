@@ -55,8 +55,16 @@ class _ArticlePageState extends State<ArticlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Top Stories'),
-        backgroundColor: Colors.yellow[700],
+        title: const Text(
+          'Top Stories',
+          style: TextStyle(
+            fontFamily: 'Corben',
+            fontWeight: FontWeight.w700,
+            fontSize: 24,
+            color: Colors.black,
+          ),
+        ),
+        backgroundColor: Colors.yellow,
       ),
       body: ListView(
         children: _articles
@@ -134,7 +142,17 @@ class _ArticlePageState extends State<ArticlePage> {
                       return Container();
                     }
                   } else if (snapshot.hasError) {
-                    return ListTile(title: Text('${snapshot.error}'));
+                    if (snapshot.error.toString().contains('SocketException') &&
+                        snapshot.error.toString().contains('errno = 11001')) {
+                      return const ListTile(
+                        title: Text('No internet connection'),
+                      );
+                    }
+                    // For other errors
+                    return ListTile(
+                      title: Text('${snapshot.error}'),
+                      onTap: () {},
+                    );
                   }
                   // By default, show a loading spinner.
                   return const Center(child: CircularProgressIndicator());

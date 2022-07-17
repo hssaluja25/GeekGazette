@@ -1,5 +1,7 @@
-// TODO First of all make the font look like the font from the catalog app.
-// TODO Then make the appBar floating.
+// TODO Make the appBar floating.
+// TODO What does else block of getComment and getArticle even do? Check it. I have written comments there.
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../src/comments.dart';
@@ -13,14 +15,8 @@ Future<Comment> getComment(int id) async {
   if (response.statusCode == 200) {
     return fromJson2Comment(response.body);
   } else {
-    return const Comment(
-      by: '',
-      id: 0,
-      parent: 0,
-      text: 'There was an error making the network call',
-      time: 0,
-      type: '',
-    );
+    // What does this do? Is it even executed? Or snapshot.error is executed?
+    throw HttpException('${response.statusCode}');
   }
 }
 
@@ -31,9 +27,19 @@ class CommentsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.yellow,
       appBar: AppBar(
-        title: const Text('Comments'),
-        backgroundColor: Colors.yellow[700],
+        foregroundColor: Colors.black,
+        title: const Text(
+          'Comments',
+          style: TextStyle(
+            fontFamily: 'Corben',
+            fontWeight: FontWeight.w700,
+            fontSize: 24,
+            color: Colors.black,
+          ),
+        ),
+        backgroundColor: Colors.white,
       ),
       body: commentIds == null || commentIds == []
           ? const Center(
@@ -65,6 +71,18 @@ class CommentsPage extends StatelessWidget {
                               return Container();
                             }
                           } else if (snapshot.hasError) {
+                            // I think this is executed when the status code is not 200 instead of what I have written in the else block of getArticle.
+                            if (snapshot.error
+                                    .toString()
+                                    .contains('SocketException') &&
+                                snapshot.error
+                                    .toString()
+                                    .contains('errno = 11001')) {
+                              return const ListTile(
+                                title: Text('No internet connection'),
+                              );
+                            }
+                            // For other errors
                             return ListTile(
                               title: Text('${snapshot.error}'),
                               onTap: () {},

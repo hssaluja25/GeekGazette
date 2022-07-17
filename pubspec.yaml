@@ -29,7 +29,7 @@ flutter:
   fonts:
     - family: Corben
       fonts:
-        - asset: assets/fonts/Corben-Bold.ttf
+        - asset: assets/fonts/Corben/Corben-Bold.ttf
 
 flutter_icons:
   image_path: assets\images\launch_image.png

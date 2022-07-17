@@ -19,9 +19,10 @@ class HackerNews extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'HackerNews Reader',
+      debugShowCheckedModeBanner: false,
       home: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-          statusBarColor: Colors.yellow,
+          statusBarColor: Colors.transparent,
         ),
         child: SafeArea(child: ArticlePage()),
       ),
