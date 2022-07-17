@@ -18,7 +18,7 @@ void main() {
 
     // Click on the first expansion tile
     await tester.tap(find.byType(ExpansionTile).first);
-    await tester.pump(Duration(days: 9));
+    await tester.pump(const Duration(days: 9));
 
     expect(find.byIcon(Icons.launch), findsOneWidget);
   });
