@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import '../src/comments.dart';
 import '../json_parsing.dart';
@@ -27,14 +28,17 @@ List<TextSpan> styleComment(String input) {
 
   var list = input.split("\n");
   for (String line in list) {
-    // Style with Courier.
     if (line.startsWith("> ")) {
-      childrenList.add(TextSpan(
+      childrenList.add(
+        TextSpan(
           text: line + '\n',
           style: TextStyle(
             fontFamily: 'Marvel',
             fontSize: 16,
-          )));
+            backgroundColor: Colors.blueGrey.shade50,
+          ),
+        ),
+      );
     }
     // Style normally.
     else {
@@ -87,7 +91,6 @@ class CommentsPage extends StatelessWidget {
                               var correctedText =
                                   HtmlDecode(snapshot.data.text);
                               return ListTile(
-                                leading: const Icon(Icons.account_circle_sharp),
                                 title: RichText(
                                   text: TextSpan(
                                     style: TextStyle(
@@ -96,6 +99,11 @@ class CommentsPage extends StatelessWidget {
                                     children: styleComment(correctedText),
                                   ),
                                 ),
+                                subtitle: Text(
+                                  snapshot.data.by,
+                                  textAlign: TextAlign.right,
+                                ),
+                                leading: FaIcon(FontAwesomeIcons.comment),
                                 dense: true,
                                 onTap: () {},
                               );
