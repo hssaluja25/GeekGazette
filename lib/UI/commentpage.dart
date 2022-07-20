@@ -1,10 +1,12 @@
 // TODO What does else block of getComment and getArticle even do? Check it. I have written comments there.
+// TODO We might not need flutter_linkify if we are already using RichText as we can use the recognizer property.
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../src/comments.dart';
 import '../json_parsing.dart';
+import '../services/html_decode.dart';
 
 // Returns Comment object
 Future<Comment> getComment(int id) async {
@@ -17,6 +19,29 @@ Future<Comment> getComment(int id) async {
     // What does this do? Is it even executed? Or snapshot.error is executed?
     throw HttpException('${response.statusCode}');
   }
+}
+
+List<TextSpan> styleComment(String input) {
+  // This will directly assinged to the children parameter of TextSpan contained within RichText.
+  List<TextSpan> childrenList = [];
+
+  var list = input.split("\n");
+  for (String line in list) {
+    // Style with Courier.
+    if (line.startsWith("> ")) {
+      childrenList.add(TextSpan(
+          text: line + '\n',
+          style: TextStyle(
+            fontFamily: 'Marvel',
+            fontSize: 16,
+          )));
+    }
+    // Style normally.
+    else {
+      childrenList.add(TextSpan(text: line));
+    }
+  }
+  return childrenList;
 }
 
 class CommentsPage extends StatelessWidget {
@@ -59,9 +84,18 @@ class CommentsPage extends StatelessWidget {
                           if (snapshot.hasData) {
                             // Comment was probably deleted if the comment's text returns null
                             if (snapshot.data.text != null) {
+                              var correctedText =
+                                  HtmlDecode(snapshot.data.text);
                               return ListTile(
                                 leading: const Icon(Icons.account_circle_sharp),
-                                title: Text('${snapshot.data.text}'),
+                                title: RichText(
+                                  text: TextSpan(
+                                    style: TextStyle(
+                                        fontFamily: 'Noticia',
+                                        color: Colors.black),
+                                    children: styleComment(correctedText),
+                                  ),
+                                ),
                                 dense: true,
                                 onTap: () {},
                               );

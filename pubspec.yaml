@@ -16,6 +16,8 @@ dependencies:
   url_launcher: ^6.1.5
   font_awesome_flutter: ^10.1.0
   http: ^0.13.4
+  html_unescape: ^2.0.0
+  flutter_linkify: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -30,6 +32,14 @@ flutter:
     - family: Corben
       fonts:
         - asset: assets/fonts/Corben/Corben-Bold.ttf
+    
+    - family: Noticia
+      fonts:
+        - asset: assets/fonts/Noticia_Text/NoticiaText-Bold.ttf
+
+    - family: Marvel
+      fonts:
+        - asset: assets/fonts/Marvel/Marvel-Regular.ttf
 
 flutter_icons:
   image_path: assets\images\launch_image.png
