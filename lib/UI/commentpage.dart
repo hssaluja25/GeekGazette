@@ -1,4 +1,3 @@
-// TODO Make the appBar floating.
 // TODO What does else block of getComment and getArticle even do? Check it. I have written comments there.
 import 'dart:io';
 

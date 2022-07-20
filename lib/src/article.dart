@@ -1,4 +1,3 @@
-// TODO For nullable fields (example kids here), should we make it not required in the constructor parameter?
 import 'package:json_annotation/json_annotation.dart';
 part 'article.g.dart';
 
