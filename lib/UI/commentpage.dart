@@ -1,52 +1,8 @@
-// TODO What does else block of getComment and getArticle even do? Check it. I have written comments there.
-// TODO We might not need flutter_linkify if we are already using RichText as we can use the recognizer property.
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart' as http;
-import '../src/comments.dart';
-import '../json_parsing.dart';
 import '../services/html_decode.dart';
-
-// Returns Comment object
-Future<Comment> getComment(int id) async {
-  final myUri =
-      Uri.parse('https://hacker-news.firebaseio.com/v0/item/$id.json');
-  final response = await http.get(myUri);
-  if (response.statusCode == 200) {
-    return fromJson2Comment(response.body);
-  } else {
-    // What does this do? Is it even executed? Or snapshot.error is executed?
-    throw HttpException('${response.statusCode}');
-  }
-}
-
-List<TextSpan> styleComment(String input) {
-  // This will directly assinged to the children parameter of TextSpan contained within RichText.
-  List<TextSpan> childrenList = [];
-
-  var list = input.split("\n");
-  for (String line in list) {
-    if (line.startsWith("> ")) {
-      childrenList.add(
-        TextSpan(
-          text: line + '\n',
-          style: TextStyle(
-            fontFamily: 'Marvel',
-            fontSize: 16,
-            backgroundColor: Colors.blueGrey.shade50,
-          ),
-        ),
-      );
-    }
-    // Style normally.
-    else {
-      childrenList.add(TextSpan(text: line));
-    }
-  }
-  return childrenList;
-}
+import '../services/displayComment.dart';
+import '../services/betterCommentStyling.dart';
 
 class CommentsPage extends StatelessWidget {
   const CommentsPage({Key? key, required this.commentIds}) : super(key: key);
@@ -94,9 +50,11 @@ class CommentsPage extends StatelessWidget {
                                 title: RichText(
                                   text: TextSpan(
                                     style: TextStyle(
-                                        fontFamily: 'Noticia',
-                                        color: Colors.black),
-                                    children: styleComment(correctedText),
+                                      fontFamily: 'Noticia',
+                                      color: Colors.black,
+                                    ),
+                                    children: createChildrenListForRichText(
+                                        correctedText, context),
                                   ),
                                 ),
                                 subtitle: Text(

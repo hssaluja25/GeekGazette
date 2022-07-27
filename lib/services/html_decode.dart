@@ -1,5 +1,3 @@
-// TODO Quotes should be displayed in a different style (in Courier; you don't have to import Courier.)
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:html_unescape/html_unescape.dart';
 
 /// Replaces <p> in the text with \n

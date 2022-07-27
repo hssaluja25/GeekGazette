@@ -11,13 +11,11 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  flutter_launcher_icons: ^0.9.3
   json_annotation: ^4.6.0
   url_launcher: ^6.1.5
   font_awesome_flutter: ^10.1.0
   http: ^0.13.4
   html_unescape: ^2.0.0
-  flutter_linkify: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -25,6 +23,8 @@ dev_dependencies:
   build_runner: ^2.2.0
   json_serializable: ^6.3.1
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.9.3
+
 
 flutter:
   uses-material-design: true
