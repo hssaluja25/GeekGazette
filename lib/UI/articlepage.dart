@@ -23,7 +23,8 @@ class _ArticlePageState extends State<ArticlePage> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        setState(() {});
+        List<int> tempList = await getBestStories();
+        setState(() => _articles = tempList);
       },
       child: Scaffold(
         body: CustomScrollView(
