@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/getTheArticle.dart';
+import '../services/fetchArticle.dart';
+import '../services/fetchBestStories.dart';
 
 // Displays top stories
 class ArticlePage extends StatefulWidget {
@@ -10,31 +11,13 @@ class ArticlePage extends StatefulWidget {
 }
 
 class _ArticlePageState extends State<ArticlePage> {
-  final List<int> _articles = [
-    32107434,
-    32106126,
-    32106762,
-    32080184,
-    32087557,
-    32104609,
-    32106063,
-    32104764,
-    32117771,
-    32120230,
-    32093452,
-    32105616,
-    32126089,
-    32115059,
-    32110573,
-    32126597,
-    32094142,
-    32106380,
-    32101729,
-    32110993,
-    32094469,
-    32120247,
-    32105129,
-  ];
+  List<int> _articles = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getBestStories().then((value) => setState(() => _articles = value));
+  }
 
   @override
   Widget build(BuildContext context) {

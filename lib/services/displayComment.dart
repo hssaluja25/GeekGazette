@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 
 import '../src/comments.dart';
-import '../json_parsing.dart';
+import 'json_parsing.dart';
 
 /// Makes a network call to HackerNews API and returns a Comment object.
 Future<Comment> getComment(int id) async {

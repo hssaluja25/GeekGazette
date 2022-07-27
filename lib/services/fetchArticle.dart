@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../src/article.dart';
 import '../UI/commentpage.dart';
-import '../json_parsing.dart';
+import 'json_parsing.dart';
 
 // Gets Article from API.
 Future<Article> _getArticle(int id) async {
@@ -35,7 +35,7 @@ Widget displayArticle(List<int> articles, int index) {
                     Padding(
                       padding: const EdgeInsets.only(left: 12),
                       child: TextButton(
-                        child: Text('${snapshot.data.descendants} comments'),
+                        child: Text('${snapshot.data.kids.length} comments'),
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -86,13 +86,6 @@ Widget displayArticle(List<int> articles, int index) {
           return Container();
         }
       } else if (snapshot.hasError) {
-        // This is probably not right.
-        if (snapshot.error.toString().contains('SocketException')) {
-          return const ListTile(
-            title: Text('No internet connection'),
-          );
-        }
-        // For other errors
         return ListTile(
           title: Text('${snapshot.error}'),
           onTap: () {},

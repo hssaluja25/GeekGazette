@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'src/article.dart';
-import 'src/comments.dart';
+import '../src/article.dart';
+import '../src/comments.dart';
 
 // Converts jsonString (Top Stories) to list of integers (id).
-List<int> fromJson2ListOfTopStories(String jsonStr) {
+List<int> fromJson2List(String jsonStr) {
   return List<int>.from(jsonDecode(jsonStr));
 }
 

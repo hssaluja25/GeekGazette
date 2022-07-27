@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hackernews/json_parsing.dart';
+import 'package:hackernews/services/json_parsing.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
