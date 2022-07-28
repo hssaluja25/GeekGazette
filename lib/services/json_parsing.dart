@@ -4,14 +4,26 @@ import '../src/comments.dart';
 
 // Converts jsonString (Top Stories) to list of integers (id).
 List<int> fromJson2List(String jsonStr) {
-  return List<int>.from(jsonDecode(jsonStr));
+  try {
+    return List<int>.from(jsonDecode(jsonStr));
+  } on FormatException catch (error) {
+    throw FormatException('The json is properly formatted.');
+  }
 }
 
 // Converts jsonString(for a particular post) to Article object.
 Article fromJson2Article(String jsonStr) {
-  return Article.fromJson(jsonDecode(jsonStr));
+  try {
+    return Article.fromJson(jsonDecode(jsonStr));
+  } on FormatException catch (error) {
+    throw FormatException('The json is properly formatted.');
+  }
 }
 
 Comment fromJson2Comment(String jsonStr) {
-  return Comment.fromJson(jsonDecode(jsonStr));
+  try {
+    return Comment.fromJson(jsonDecode(jsonStr));
+  } on FormatException catch (error) {
+    throw FormatException('The json is properly formatted.');
+  }
 }
