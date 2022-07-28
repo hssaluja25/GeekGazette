@@ -7,7 +7,10 @@ String changePara(String input) {
   return input.replaceAll(find, replaceWith);
 }
 
-/// The response from the API can contain HTML code in it. This function converts it into a human-readable string. It uses the html_unescape library to do most of the work (like converting &amp; to &). However, such as for changing paras, we have to do some manual work too.
+/// The response from the API can contain HTML code in it. This function
+/// converts it into a human-readable string. It uses the html_unescape library
+/// to do most of the work (like converting &amp; to &). However, we have to do
+/// some manual work too.
 String HtmlDecode(String input) {
   var unescape = HtmlUnescape();
   var halfCorrect = unescape.convert(input);
