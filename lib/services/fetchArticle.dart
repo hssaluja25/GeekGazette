@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../src/article.dart';
 import '../UI/commentpage.dart';
@@ -36,43 +37,65 @@ Widget displayArticle(List<int> articles, int index) {
                       padding: const EdgeInsets.only(left: 12),
                       child: TextButton(
                         child: Text('${snapshot.data.kids.length} comments'),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  CommentsPage(commentIds: snapshot.data.kids),
-                            ),
-                          );
+                        onPressed: () async {
+                          var connectivityResult =
+                              await (Connectivity().checkConnectivity());
+                          if (connectivityResult == ConnectivityResult.mobile ||
+                              connectivityResult == ConnectivityResult.wifi) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => CommentsPage(
+                                    commentIds: snapshot.data.kids),
+                              ),
+                            );
+                          } else {
+                            SnackBar snackbar = SnackBar(
+                                content: const Text('No Internet Connection'));
+                            ScaffoldMessenger.of(context)
+                              ..removeCurrentSnackBar()
+                              ..showSnackBar(snackbar);
+                          }
                         },
                       ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.launch),
                       onPressed: () async {
-                        final urlOfArticle = Uri.parse(snapshot.data.url);
-                        // TODO Come here for adding progress indicator to webview.
-                        if (await canLaunchUrl(urlOfArticle)) {
-                          launchUrl(urlOfArticle);
+                        var connectivityResult =
+                            await (Connectivity().checkConnectivity());
+                        if (connectivityResult == ConnectivityResult.wifi ||
+                            connectivityResult == ConnectivityResult.mobile) {
+                          final urlOfArticle = Uri.parse(snapshot.data.url);
+                          // TODO Come here for adding progress indicator to webview.
+                          if (await canLaunchUrl(urlOfArticle)) {
+                            launchUrl(urlOfArticle);
+                          } else {
+                            // Display a dialog box saying that the URL could not be launched.
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Error'),
+                                  content: const Text(
+                                      'There was an error opening the web page'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('Ok'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          }
                         } else {
-                          // Display a dialog box saying that the URL could not be launched.
-                          showDialog(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Error'),
-                                content: const Text(
-                                    'There was an error opening the web page'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text('Ok'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                          SnackBar snackbar = SnackBar(
+                              content: const Text('No Internet Connection'));
+                          ScaffoldMessenger.of(context)
+                            ..removeCurrentSnackBar()
+                            ..showSnackBar(snackbar);
                         }
                       },
                     ),
