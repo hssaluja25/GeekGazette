@@ -10,6 +10,8 @@ Future<List<int>> getBestStories() async {
     return fromJson2List(response.body);
   } on SocketException catch (error) {
     throw SocketException('Error getting best stories');
+  } on HttpException catch (error) {
+    throw HttpException('Error getting best stories');
   } on Exception catch (error) {
     throw Exception('Error getting best stories');
   }

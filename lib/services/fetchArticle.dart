@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'dart:io';
 
 import '../src/article.dart';
 import '../UI/commentpage.dart';
@@ -9,16 +10,28 @@ import 'json_parsing.dart';
 
 // Gets Article from API.
 Future<Article> _getArticle(int id) async {
-  final uri = Uri.parse('https://hacker-news.firebaseio.com/v0/item/$id.json');
-  final response = await http.get(uri);
-  if (response.statusCode == 200) {
-    return fromJson2Article(response.body);
-  } else {
-    return Article(title: 'Error getting the article.');
+  try {
+    final uri =
+        Uri.parse('https://hacker-news.firebaseio.com/v0/item/$id.json');
+    final response = await http.get(uri);
+    // If you give an invalid id, response.body would be 'null' (in string)
+    // would be returned.
+    if (response.body != 'null') {
+      return fromJson2Article(response.body);
+    } else {
+      throw Exception('Invalid id');
+    }
+  } on SocketException catch (error) {
+    throw SocketException('Error getting the article having id $id');
+  } on HttpException catch (error) {
+    throw HttpException('Error getting the article having id $id');
+  } on Exception catch (error) {
+    throw Exception('$error');
   }
 }
 
-// Displays Article by making a network call. The actual network call is made by _getArticle
+// Displays Article by making a network call. The actual network call is made by
+// _getArticle
 Widget displayArticle(List<int> articles, int index) {
   return FutureBuilder<Article>(
     future: _getArticle(articles[index]),
@@ -109,10 +122,9 @@ Widget displayArticle(List<int> articles, int index) {
           return Container();
         }
       } else if (snapshot.hasError) {
-        return ListTile(
-          title: Text('${snapshot.error}'),
-          onTap: () {},
-        );
+        // If there is an error getting an inidividual article, it won't be
+        // displayed.
+        return Container();
       }
       // By default, show a loading spinner.
       return const Center(child: CircularProgressIndicator());
