@@ -6,13 +6,16 @@ import 'json_parsing.dart';
 
 /// Makes a network call to HackerNews API and returns a Comment object.
 Future<Comment> getComment(int id) async {
-  final myUri =
-      Uri.parse('https://hacker-news.firebaseio.com/v0/item/$id.json');
-  final response = await http.get(myUri);
-  if (response.statusCode == 200) {
+  try {
+    final myUri =
+        Uri.parse('https://hacker-news.firebaseio.com/v0/item/$id.json');
+    final response = await http.get(myUri);
     return fromJson2Comment(response.body);
-  } else {
-    // What does this do? Is it even executed? Or snapshot.error is executed?
-    throw HttpException('${response.statusCode}');
+  } on SocketException catch (error) {
+    throw SocketException('Error getting comment: $id');
+  } on HttpException catch (error) {
+    throw HttpException('Error getting comment: $id');
+  } on Exception catch (error) {
+    throw Exception('Error getting comment: $id');
   }
 }

@@ -70,22 +70,9 @@ class CommentsPage extends StatelessWidget {
                               return Container();
                             }
                           } else if (snapshot.hasError) {
-                            // I think this is executed when the status code is not 200 instead of what I have written in the else block of getArticle.
-                            if (snapshot.error
-                                    .toString()
-                                    .contains('SocketException') &&
-                                snapshot.error
-                                    .toString()
-                                    .contains('errno = 11001')) {
-                              return const ListTile(
-                                title: Text('No internet connection'),
-                              );
-                            }
-                            // For other errors
-                            return ListTile(
-                              title: Text('${snapshot.error}'),
-                              onTap: () {},
-                            );
+                            // If there is an error getting a particular comment,
+                            // it won't be displayed.
+                            return Container();
                           }
                           return const Center(
                               child: CircularProgressIndicator());
