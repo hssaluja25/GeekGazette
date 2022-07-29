@@ -7,7 +7,7 @@ List<int> fromJson2List(String jsonStr) {
   try {
     return List<int>.from(jsonDecode(jsonStr));
   } on FormatException catch (error) {
-    throw FormatException('The json is properly formatted.');
+    throw const FormatException('The json is properly formatted.');
   }
 }
 
@@ -16,7 +16,7 @@ Article fromJson2Article(String jsonStr) {
   try {
     return Article.fromJson(jsonDecode(jsonStr));
   } on FormatException catch (error) {
-    throw FormatException('The json is properly formatted.');
+    throw const FormatException('The json is properly formatted.');
   }
 }
 
@@ -24,6 +24,6 @@ Comment fromJson2Comment(String jsonStr) {
   try {
     return Comment.fromJson(jsonDecode(jsonStr));
   } on FormatException catch (error) {
-    throw FormatException('The json is properly formatted.');
+    throw const FormatException('The json is properly formatted.');
   }
 }

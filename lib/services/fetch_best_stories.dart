@@ -9,9 +9,9 @@ Future<List<int>> getBestStories() async {
     final response = await http.get(uri);
     return fromJson2List(response.body);
   } on SocketException catch (error) {
-    throw SocketException('Error getting best stories');
+    throw const SocketException('Error getting best stories');
   } on HttpException catch (error) {
-    throw HttpException('Error getting best stories');
+    throw const HttpException('Error getting best stories');
   } on Exception catch (error) {
     throw Exception('Error getting best stories');
   }

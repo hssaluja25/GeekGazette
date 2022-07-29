@@ -1,7 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import '../services/fetchArticle.dart';
-import '../services/fetchBestStories.dart';
+import '../services/fetch_and_display_article.dart';
+import '../services/fetch_best_stories.dart';
 
 // Displays best stories
 class ArticlePage extends StatefulWidget {
@@ -91,7 +91,7 @@ class _ArticlePageState extends State<ArticlePage> {
                           padding: const EdgeInsets.only(left: 20.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
+                            children: const [
                               Icon(Icons.delete_forever),
                             ],
                           ),
@@ -103,7 +103,7 @@ class _ArticlePageState extends State<ArticlePage> {
                           padding: const EdgeInsets.only(right: 20.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
+                            children: const [
                               Icon(Icons.delete_forever),
                             ],
                           ),

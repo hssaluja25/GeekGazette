@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../services/html_decode.dart';
-import '../services/displayComment.dart';
-import '../services/commentStyling.dart';
+import '../services/display_comment.dart';
+import '../services/comment_styling.dart';
 
 class CommentsPage extends StatelessWidget {
   const CommentsPage({Key? key, required this.commentIds}) : super(key: key);
@@ -45,11 +45,11 @@ class CommentsPage extends StatelessWidget {
                             // Comment was probably deleted if the comment's text returns null
                             if (snapshot.data.text != null) {
                               var correctedText =
-                                  HtmlDecode(snapshot.data.text);
+                                  htmlDecode(snapshot.data.text);
                               return ListTile(
                                 title: RichText(
                                   text: TextSpan(
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontFamily: 'Noticia',
                                       color: Colors.black,
                                     ),
@@ -61,7 +61,7 @@ class CommentsPage extends StatelessWidget {
                                   snapshot.data.by,
                                   textAlign: TextAlign.right,
                                 ),
-                                leading: FaIcon(FontAwesomeIcons.comment),
+                                leading: const FaIcon(FontAwesomeIcons.comment),
                                 dense: true,
                                 onTap: () {},
                               );

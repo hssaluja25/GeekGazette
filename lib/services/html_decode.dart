@@ -11,7 +11,7 @@ String changePara(String input) {
 /// This function styles the HTML. It uses the html_unescape library to do most
 /// of the work (like converting &amp; to &). However, we have to do some manual
 /// work too.
-String HtmlDecode(String input) {
+String htmlDecode(String input) {
   var unescape = HtmlUnescape();
   var halfCorrect = unescape.convert(input);
   var changesThePara = changePara(halfCorrect);

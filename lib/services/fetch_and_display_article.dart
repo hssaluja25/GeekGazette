@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
 
@@ -40,7 +41,7 @@ Widget displayArticleOrError(List<int> articles, int index) {
     builder: (BuildContext context, AsyncSnapshot snapshot) {
       if (snapshot.hasData) {
         if (snapshot.data.title != null) {
-          return displayArticle(snapshot);
+          return DisplayArticle(snapshot);
         } else {
           // The article was deleted
           return Container();
@@ -61,10 +62,15 @@ String formatDate(int milliseconds) {
   return template.format(DateTime.fromMillisecondsSinceEpoch(milliseconds));
 }
 
-class displayArticle extends StatelessWidget {
-  final snapshot;
-  displayArticle(this.snapshot);
+class DisplayArticle extends StatefulWidget {
+  final AsyncSnapshot snapshot;
+  const DisplayArticle(this.snapshot, {Key? key}) : super(key: key);
 
+  @override
+  State<DisplayArticle> createState() => _DisplayArticleState();
+}
+
+class _DisplayArticleState extends State<DisplayArticle> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -74,22 +80,22 @@ class displayArticle extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${snapshot.data!.by} · ${formatDate(snapshot.data!.time)}',
-              style: TextStyle(fontSize: 14),
+              '${widget.snapshot.data!.by} · ${formatDate(widget.snapshot.data!.time)}',
+              style: const TextStyle(fontSize: 14),
             ),
-            Text(snapshot.data!.title),
+            Text(widget.snapshot.data!.title),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: FaIcon(
+                  icon: const FaIcon(
                     FontAwesomeIcons.bookmark,
                     size: 20,
                   ),
                   onPressed: () {},
                 ),
                 IconButton(
-                  icon: FaIcon(
+                  icon: const FaIcon(
                     FontAwesomeIcons.comment,
                     size: 20,
                   ),
@@ -98,16 +104,18 @@ class displayArticle extends StatelessWidget {
                         await (Connectivity().checkConnectivity());
                     if (connectivityResult == ConnectivityResult.mobile ||
                         connectivityResult == ConnectivityResult.wifi) {
+                      if (!mounted) return;
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              CommentsPage(commentIds: snapshot.data.kids),
+                          builder: (BuildContext context) => CommentsPage(
+                              commentIds: widget.snapshot.data.kids),
                         ),
                       );
                     } else {
-                      SnackBar snackbar = SnackBar(
-                          content: const Text('No Internet Connection'));
+                      SnackBar snackbar = const SnackBar(
+                          content: Text('No Internet Connection'));
+                      if (!mounted) return;
                       ScaffoldMessenger.of(context)
                         ..removeCurrentSnackBar()
                         ..showSnackBar(snackbar);
@@ -115,11 +123,16 @@ class displayArticle extends StatelessWidget {
                   },
                 ),
                 IconButton(
-                  icon: FaIcon(
+                  icon: const FaIcon(
                     FontAwesomeIcons.shareNodes,
                     size: 20,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Share.share(
+                      widget.snapshot.data!.url,
+                      subject: 'Check out this article from Hacker News',
+                    );
+                  },
                 ),
               ],
             ),
@@ -129,7 +142,7 @@ class displayArticle extends StatelessWidget {
           var connectivityResult = await (Connectivity().checkConnectivity());
           if (connectivityResult == ConnectivityResult.wifi ||
               connectivityResult == ConnectivityResult.mobile) {
-            final urlOfArticle = Uri.parse(snapshot.data.url);
+            final urlOfArticle = Uri.parse(widget.snapshot.data.url);
             // TODO Come here for adding progress indicator to webview.
             if (await canLaunchUrl(urlOfArticle)) {
               launchUrl(urlOfArticle);
@@ -155,7 +168,8 @@ class displayArticle extends StatelessWidget {
             }
           } else {
             SnackBar snackbar =
-                SnackBar(content: const Text('No Internet Connection'));
+                const SnackBar(content: Text('No Internet Connection'));
+            if (!mounted) return;
             ScaffoldMessenger.of(context)
               ..removeCurrentSnackBar()
               ..showSnackBar(snackbar);

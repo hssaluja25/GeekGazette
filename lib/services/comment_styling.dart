@@ -47,7 +47,7 @@ void styleQuotesOnly(String line, List<TextSpan> childrenList) {
   childrenList.add(
     TextSpan(
       text: line,
-      style: TextStyle(
+      style: const TextStyle(
         fontFamily: 'Marvel',
         fontSize: 16,
       ),
@@ -68,7 +68,7 @@ void styleHyperLinksOnly(
   TextSpan ts1 = TextSpan(text: line.substring(0, openingTagStartsAt));
   TextSpan ts2 = TextSpan(
     text: line.substring(openingTagStopsAt + 2, closingTagStartsAt),
-    style: TextStyle(color: Colors.blue),
+    style: const TextStyle(color: Colors.blue),
     recognizer: TapGestureRecognizer()
       ..onTap = () async {
         if (await canLaunchUrl(linkUri)) {
@@ -103,14 +103,14 @@ void styleHyperLinksOnly(
 }
 
 void styleItalicsOnly(String line, List<TextSpan> childrenList) {
-  int opening_i_tag = line.indexOf('<i>');
-  int closing_i_tag = line.indexOf('</i>');
-  TextSpan ts1 = TextSpan(text: line.substring(0, opening_i_tag));
+  int openingItalicsTag = line.indexOf('<i>');
+  int closingItalicsTag = line.indexOf('</i>');
+  TextSpan ts1 = TextSpan(text: line.substring(0, openingItalicsTag));
   TextSpan ts2 = TextSpan(
-    text: line.substring(opening_i_tag + 3, closing_i_tag),
-    style: TextStyle(fontStyle: FontStyle.italic),
+    text: line.substring(openingItalicsTag + 3, closingItalicsTag),
+    style: const TextStyle(fontStyle: FontStyle.italic),
   );
-  TextSpan ts3 = TextSpan(text: line.substring(closing_i_tag + 4));
+  TextSpan ts3 = TextSpan(text: line.substring(closingItalicsTag + 4));
   childrenList
     ..add(ts1)
     ..add(ts2)
@@ -141,7 +141,7 @@ void styleHyperLinksAndItalics(
         '');
     line = line.replaceFirst('</a>', '');
     childrenList
-        .add(TextSpan(text: link, style: TextStyle(color: Colors.blue)));
+        .add(TextSpan(text: link, style: const TextStyle(color: Colors.blue)));
   }
   childrenList.add(TextSpan(text: line));
 }
