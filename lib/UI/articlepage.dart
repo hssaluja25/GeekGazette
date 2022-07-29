@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/fetchArticle.dart';
 import '../services/fetchBestStories.dart';
 
-// Displays top stories
+// Displays best stories
 class ArticlePage extends StatefulWidget {
   const ArticlePage({Key? key}) : super(key: key);
 
@@ -66,7 +66,7 @@ class _ArticlePageState extends State<ArticlePage> {
             slivers: [
               const SliverAppBar(
                 title: Text(
-                  'Top Stories',
+                  'Best Stories',
                   style: TextStyle(
                     fontFamily: 'Corben',
                     fontWeight: FontWeight.w700,
@@ -125,7 +125,7 @@ class _ArticlePageState extends State<ArticlePage> {
                           ..removeCurrentSnackBar()
                           ..showSnackBar(snackbar);
                       },
-                      child: displayArticle(_articles, index),
+                      child: displayArticleOrError(_articles, index),
                     );
                   },
                 ),

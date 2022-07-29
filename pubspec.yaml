@@ -17,6 +17,7 @@ dependencies:
   http: ^0.13.4
   html_unescape: ^2.0.0
   connectivity_plus: ^2.3.6
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

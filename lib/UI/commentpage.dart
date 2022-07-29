@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../services/html_decode.dart';
 import '../services/displayComment.dart';
-import '../services/betterCommentStyling.dart';
+import '../services/commentStyling.dart';
 
 class CommentsPage extends StatelessWidget {
   const CommentsPage({Key? key, required this.commentIds}) : super(key: key);

@@ -16,7 +16,7 @@ TODO INSERT GIF HERE
 ## Features
 
 * Uses Flutter 3.0
-* Displays top stories on Hacker News
+* Displays best stories on Hacker News
 * Supports pull down to refresh
 
 ## Contributing
