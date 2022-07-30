@@ -33,6 +33,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/aw_snap.jpg
+    - assets/icons/trash.gif
   fonts:
     - family: Corben
       fonts:

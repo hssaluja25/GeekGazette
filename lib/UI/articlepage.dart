@@ -91,8 +91,11 @@ class _ArticlePageState extends State<ArticlePage> {
                           padding: const EdgeInsets.only(left: 20.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              Icon(Icons.delete_forever),
+                            children: [
+                              Image.asset(
+                                'assets/icons/trash.gif',
+                                height: 40,
+                              ),
                             ],
                           ),
                         ),
@@ -103,8 +106,11 @@ class _ArticlePageState extends State<ArticlePage> {
                           padding: const EdgeInsets.only(right: 20.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            children: const [
-                              Icon(Icons.delete_forever),
+                            children: [
+                              Image.asset(
+                                'assets/icons/trash.gif',
+                                height: 40,
+                              ),
                             ],
                           ),
                         ),
