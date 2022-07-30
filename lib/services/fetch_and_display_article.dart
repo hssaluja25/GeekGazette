@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'package:intl/intl.dart';
@@ -71,6 +72,8 @@ class DisplayArticle extends StatefulWidget {
 }
 
 class _DisplayArticleState extends State<DisplayArticle> {
+  bool _isBookmarked = false;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -88,11 +91,24 @@ class _DisplayArticleState extends State<DisplayArticle> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: const FaIcon(
-                    FontAwesomeIcons.bookmark,
-                    size: 20,
-                  ),
-                  onPressed: () {},
+                  icon: _isBookmarked == true
+                      ? const FaIcon(FontAwesomeIcons.solidBookmark,
+                          size: 20, color: Colors.yellow)
+                      : const FaIcon(FontAwesomeIcons.bookmark, size: 20),
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    const key = 'bookmarks';
+                    final bookmarkedArticles = prefs.getStringList(key) ?? [];
+                    if (!_isBookmarked) {
+                      bookmarkedArticles.add('${widget.snapshot.data!.id}');
+                      prefs.setStringList(key, bookmarkedArticles);
+                      setState(() => _isBookmarked = true);
+                    } else {
+                      bookmarkedArticles.remove('${widget.snapshot.data!.id}');
+                      prefs.setStringList(key, bookmarkedArticles);
+                      setState(() => _isBookmarked = false);
+                    }
+                  },
                 ),
                 IconButton(
                   icon: const FaIcon(
