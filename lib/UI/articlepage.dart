@@ -1,7 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import '../services/fetch_and_display_article.dart';
+import '../services/display_article.dart';
 import '../services/fetch_best_stories.dart';
+import '../src/article.dart';
+import '../services/fetch_article.dart';
 
 // Displays best stories
 class ArticlePage extends StatefulWidget {
@@ -66,7 +68,7 @@ class _ArticlePageState extends State<ArticlePage> {
             slivers: [
               const SliverAppBar(
                 title: Text(
-                  'Best Stories',
+                  'Home',
                   style: TextStyle(
                     fontFamily: 'Corben',
                     fontWeight: FontWeight.w700,
@@ -131,10 +133,48 @@ class _ArticlePageState extends State<ArticlePage> {
                           ..removeCurrentSnackBar()
                           ..showSnackBar(snackbar);
                       },
-                      child: displayArticleOrError(_articles, index),
+                      child: FutureBuilder<Article>(
+                        future: getArticle(_articles[index]),
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasData) {
+                            if (snapshot.data.title != null) {
+                              return DisplayArticle(snapshot);
+                            } else {
+                              // The article was deleted
+                              return Container();
+                            }
+                          } else if (snapshot.hasError) {
+                            // If there is an error getting an inidividual article, it won't be
+                            // displayed.
+                            return Container();
+                          }
+                          // By default, show a loading spinner.
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        },
+                      ),
                     );
                   },
                 ),
+              ),
+            ],
+          ),
+          // ! Make notes in copy
+          bottomNavigationBar: BottomNavigationBar(
+            showUnselectedLabels: false,
+            showSelectedLabels: false,
+            backgroundColor: Colors.blueAccent.shade400,
+            selectedItemColor: Colors.yellow,
+            unselectedItemColor: Colors.white,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_filled),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.bookmarks_rounded),
+                label: 'Bookmark',
               ),
             ],
           ),
