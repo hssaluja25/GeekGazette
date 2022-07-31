@@ -1,11 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import '../services/display_article.dart';
+import 'bookmarkpage.dart';
+import 'handle_article_display.dart';
 import '../services/fetch_best_stories.dart';
-import '../src/article.dart';
-import '../services/fetch_article.dart';
 
-// Displays best stories
 class ArticlePage extends StatefulWidget {
   const ArticlePage({Key? key}) : super(key: key);
 
@@ -14,14 +12,16 @@ class ArticlePage extends StatefulWidget {
 }
 
 class _ArticlePageState extends State<ArticlePage> {
-  List<int> _articles = [];
+  List<int> _articlesId = [];
   bool _successFetchingStories = true;
+  int _currentIndex = 0;
 
+  // Initializes _articlesId
   @override
   void initState() {
     super.initState();
     getBestStories()
-        .then((value) => setState(() => _articles = value))
+        .then((value) => setState(() => _articlesId = value))
         .catchError(
             (onError) => setState(() => _successFetchingStories = false));
   }
@@ -37,7 +37,7 @@ class _ArticlePageState extends State<ArticlePage> {
               connectivityResult == ConnectivityResult.wifi) {
             List<int> tempList = await getBestStories();
             setState(() {
-              _articles = tempList;
+              _articlesId = tempList;
               _successFetchingStories = true;
             });
           }
@@ -58,115 +58,101 @@ class _ArticlePageState extends State<ArticlePage> {
           if (connectivityResult == ConnectivityResult.mobile ||
               connectivityResult == ConnectivityResult.wifi) {
             List<int> tempList = await getBestStories();
-            setState(() => _articles = tempList);
+            setState(() => _articlesId = tempList);
           } else {
             setState(() => _successFetchingStories = false);
           }
         },
         child: Scaffold(
-          body: CustomScrollView(
-            slivers: [
-              const SliverAppBar(
-                title: Text(
-                  'Home',
-                  style: TextStyle(
-                    fontFamily: 'Corben',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 24,
-                    color: Colors.black,
-                  ),
-                ),
-                backgroundColor: Colors.yellow,
-                floating: true,
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  childCount: _articles.length,
-                  addAutomaticKeepAlives: true,
-                  (context, index) {
-                    int articleIdAtIndex = _articles[index];
-                    return Dismissible(
-                      key: ValueKey(_articles[index]),
-                      background: Container(
-                        color: Colors.yellow,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/icons/trash.gif',
-                                height: 40,
-                              ),
-                            ],
-                          ),
+          body: _currentIndex == 1
+              ? const BookmarkPage()
+              : CustomScrollView(
+                  slivers: [
+                    const SliverAppBar(
+                      title: Text(
+                        'Home',
+                        style: TextStyle(
+                          fontFamily: 'Corben',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 24,
+                          color: Colors.black,
                         ),
                       ),
-                      secondaryBackground: Container(
-                        color: Colors.yellow,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Image.asset(
-                                'assets/icons/trash.gif',
-                                height: 40,
+                      backgroundColor: Colors.yellow,
+                      floating: true,
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        childCount: _articlesId.length,
+                        addAutomaticKeepAlives: true,
+                        (context, index) {
+                          int articleIdAtIndex = _articlesId[index];
+                          return Dismissible(
+                            key: ValueKey(_articlesId[index]),
+                            background: Container(
+                              color: Colors.yellow,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Image.asset(
+                                      'assets/icons/trash.gif',
+                                      height: 40,
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      onDismissed: (DismissDirection direction) {
-                        setState(() => _articles.removeAt(index));
-                        SnackBar snackbar = SnackBar(
-                          content: const Text('Removed'),
-                          action: SnackBarAction(
-                            label: 'Undo',
-                            onPressed: () {
-                              setState(() =>
-                                  _articles.insert(index, articleIdAtIndex));
+                            ),
+                            secondaryBackground: Container(
+                              color: Colors.yellow,
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 20.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Image.asset(
+                                      'assets/icons/trash.gif',
+                                      height: 40,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            onDismissed: (DismissDirection direction) {
+                              setState(() => _articlesId.removeAt(index));
+                              SnackBar snackbar = SnackBar(
+                                content: const Text('Removed'),
+                                action: SnackBarAction(
+                                  label: 'Undo',
+                                  onPressed: () {
+                                    setState(() => _articlesId.insert(
+                                        index, articleIdAtIndex));
+                                  },
+                                ),
+                              );
+                              ScaffoldMessenger.of(context)
+                                ..removeCurrentSnackBar()
+                                ..showSnackBar(snackbar);
                             },
-                          ),
-                        );
-                        ScaffoldMessenger.of(context)
-                          ..removeCurrentSnackBar()
-                          ..showSnackBar(snackbar);
-                      },
-                      child: FutureBuilder<Article>(
-                        future: getArticle(_articles[index]),
-                        builder:
-                            (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
-                            if (snapshot.data.title != null) {
-                              return DisplayArticle(snapshot);
-                            } else {
-                              // The article was deleted
-                              return Container();
-                            }
-                          } else if (snapshot.hasError) {
-                            // If there is an error getting an inidividual article, it won't be
-                            // displayed.
-                            return Container();
-                          }
-                          // By default, show a loading spinner.
-                          return const Center(
-                              child: CircularProgressIndicator());
+                            child: HandleArticleDisplay(
+                                articles: _articlesId, index: index),
+                          );
                         },
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          // ! Make notes in copy
           bottomNavigationBar: BottomNavigationBar(
             showUnselectedLabels: false,
             showSelectedLabels: false,
             backgroundColor: Colors.blueAccent.shade400,
             selectedItemColor: Colors.yellow,
             unselectedItemColor: Colors.white,
+            currentIndex: _currentIndex,
+            onTap: (int index) {
+              setState(() => _currentIndex = index);
+            },
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home_filled),
