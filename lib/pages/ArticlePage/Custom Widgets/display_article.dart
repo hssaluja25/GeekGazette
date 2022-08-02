@@ -5,11 +5,15 @@ import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'format_date.dart';
-import '../UI/commentpage.dart';
+import '../../../services/format_date.dart';
+import '../../CommentsPage/commentpage.dart';
 
 class DisplayArticle extends StatefulWidget {
   final AsyncSnapshot snapshot;
+
+  /// Allows for bookmarking, opening the associated URL, sharing the article,
+  /// displaying the comments.
+  /// Swiping to dismiss is managed by ArticlePage
   const DisplayArticle(this.snapshot, {Key? key}) : super(key: key);
 
   @override
@@ -19,17 +23,19 @@ class DisplayArticle extends StatefulWidget {
 class _DisplayArticleState extends State<DisplayArticle> {
   bool _isBookmarked = false;
 
-  // Triggered when the user presses on the bookmark iconbutton
-  // If previously bookmarked -> now removed.
-  // If not bookmarked previously -> now bookmarked.
-  // Also changes the icon color.
+  /// Triggered when the user presses on the bookmark iconbutton
+  /// If previously bookmarked -> now removed.
+  /// If not bookmarked previously -> now bookmarked.
+  /// Also changes the icon color.
   handleBookmarking() async {
     final prefs = await SharedPreferences.getInstance();
     const key = 'bookmarks';
     final bookmarkedArticles = prefs.getStringList(key) ?? [];
 
+    // Add to bookmark, if not bookmarked
     if (!_isBookmarked) {
-      // Checking if list does not already contain this article
+      // Ensures that the article to bookmark was not already in the list of
+      // bookmarked articles.
       if (!bookmarkedArticles.contains('${widget.snapshot.data!.id}')) {
         bookmarkedArticles.add('${widget.snapshot.data!.id}');
         prefs.setStringList(key, bookmarkedArticles);
@@ -38,6 +44,7 @@ class _DisplayArticleState extends State<DisplayArticle> {
         }
       }
     } else {
+      // If bookmarked, remove from bookmarks.
       bookmarkedArticles.remove('${widget.snapshot.data!.id}');
       prefs.setStringList(key, bookmarkedArticles);
       if (mounted) {
@@ -46,8 +53,7 @@ class _DisplayArticleState extends State<DisplayArticle> {
     }
   }
 
-  // When the user presses on the ListTile, the associtaed URL is opened.
-  // This handles that.
+  /// When the user presses on the ListTile, the associated URL is opened.
   handleOpeningUrl() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.wifi ||
@@ -85,9 +91,31 @@ class _DisplayArticleState extends State<DisplayArticle> {
     }
   }
 
-  // This initializes the _isBookmarked instance variable which is used to
-  // by the bookmark iconbutton to display different icons depending on
-  // whether the article is bookmarked or not.
+  /// If internet connection is available, the [CommentsPage] is displayed.
+  /// Else a SnackBar is displayed with appropriate error message.
+  openComments() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) =>
+              CommentsPage(commentIds: widget.snapshot.data.kids),
+        ),
+      );
+    } else {
+      SnackBar snackbar =
+          const SnackBar(content: Text('No Internet Connection'));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+        ..removeCurrentSnackBar()
+        ..showSnackBar(snackbar);
+    }
+  }
+
+  /// Initialize the _isBookmarked instance variable on app (re)start.
   @override
   void initState() {
     () async {
@@ -131,28 +159,7 @@ class _DisplayArticleState extends State<DisplayArticle> {
                     FontAwesomeIcons.comment,
                     size: 20,
                   ),
-                  onPressed: () async {
-                    var connectivityResult =
-                        await (Connectivity().checkConnectivity());
-                    if (connectivityResult == ConnectivityResult.mobile ||
-                        connectivityResult == ConnectivityResult.wifi) {
-                      if (!mounted) return;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => CommentsPage(
-                              commentIds: widget.snapshot.data.kids),
-                        ),
-                      );
-                    } else {
-                      SnackBar snackbar = const SnackBar(
-                          content: Text('No Internet Connection'));
-                      if (!mounted) return;
-                      ScaffoldMessenger.of(context)
-                        ..removeCurrentSnackBar()
-                        ..showSnackBar(snackbar);
-                    }
-                  },
+                  onPressed: openComments,
                 ),
                 IconButton(
                   icon: const FaIcon(

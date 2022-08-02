@@ -32,7 +32,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/aw_snap.jpg
+    - assets/images/error.jpg
     - assets/icons/trash.gif
   fonts:
     - family: Corben

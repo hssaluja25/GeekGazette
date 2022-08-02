@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'handle_article_display.dart';
+import '../ArticlePage/Custom Widgets/handle_article_display.dart';
 
 class BookmarkPage extends StatefulWidget {
   const BookmarkPage({Key? key}) : super(key: key);
@@ -12,7 +12,7 @@ class BookmarkPage extends StatefulWidget {
 class _BookmarkPageState extends State<BookmarkPage> {
   List<int> _bookmarksId = [];
 
-  // Initialize _bookmarksId from memory
+  /// Initialize _bookmarksId from memory
   @override
   void initState() {
     () async {

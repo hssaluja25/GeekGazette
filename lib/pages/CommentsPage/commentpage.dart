@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../services/html_decode.dart';
-import '../services/display_comment.dart';
-import '../services/comment_styling.dart';
+import '../../services/html_decode.dart';
+import '../../services/API/fetch_comment.dart';
+import 'Custom Widgets/style_comment.dart';
 
 class CommentsPage extends StatelessWidget {
   const CommentsPage({Key? key, required this.commentIds}) : super(key: key);

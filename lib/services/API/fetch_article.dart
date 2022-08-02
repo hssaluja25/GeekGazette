@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
-import 'json_parsing.dart';
-import '../src/article.dart';
+import '../json_parsing.dart';
+import '../../src/article.dart';
 
 // Gets Article from API.
 Future<Article> getArticle(int id) async {

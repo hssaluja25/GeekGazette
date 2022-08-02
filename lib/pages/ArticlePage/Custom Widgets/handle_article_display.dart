@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import '../src/article.dart';
-import '../services/fetch_article.dart';
-import '../services/display_article.dart';
+import '../../../src/article.dart';
+import '../../../services/API/fetch_article.dart';
+import 'display_article.dart';
 
 class HandleArticleDisplay extends StatelessWidget {
+  /// Fetches a particular article.
+  /// In case of an error, it displays a Container.
+  /// Else, it calls [DisplayArticle]
   const HandleArticleDisplay({
     Key? key,
     required List<int> articles,

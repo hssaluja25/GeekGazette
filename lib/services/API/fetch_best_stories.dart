@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'json_parsing.dart';
+import '../json_parsing.dart';
 
 Future<List<int>> getBestStories() async {
   try {
