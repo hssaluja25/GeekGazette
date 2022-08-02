@@ -3,7 +3,7 @@ import 'Custom Widgets/handle_article_display.dart';
 
 class ArticlePage extends StatefulWidget {
   final List<int> articlesId;
-  const ArticlePage(List<int> this.articlesId, {Key? key}) : super(key: key);
+  const ArticlePage(this.articlesId, {Key? key}) : super(key: key);
 
   @override
   State<ArticlePage> createState() => _ArticlePageState();

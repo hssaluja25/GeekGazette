@@ -3,7 +3,8 @@ part 'comments.g.dart';
 
 @JsonSerializable()
 class Comment {
-  // * If text of comment is null then we do not display it, if anything else is null then we have no problem.
+  // If the fields are final, we don't need to make them private
+  // as they cannot be modified.
   final String? by;
   final int? id;
   final List? kids;

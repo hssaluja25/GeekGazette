@@ -3,16 +3,18 @@ part 'article.g.dart';
 
 @JsonSerializable()
 class Article {
+  // If the fields are final, we don't need to make them private
+  // as they cannot be modified.
   final int? id;
-  bool? deleted;
+  final bool? deleted;
   final String? type;
   final String? by;
   final int? time;
   final String? text;
-  bool? dead;
+  final bool? dead;
   final String? parent;
   final int? poll;
-  List? kids;
+  final List? kids;
   final String? url;
   final int? score;
   final String? title;

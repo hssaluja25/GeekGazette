@@ -7,21 +7,17 @@ class HandleArticleDisplay extends StatelessWidget {
   /// Fetches a particular article.
   /// In case of an error, it displays a Container.
   /// Else, it calls [DisplayArticle]
-  const HandleArticleDisplay({
-    Key? key,
-    required List<int> articles,
-    required int index,
-  })  : _articles = articles,
-        _index = index,
-        super(key: key);
+  const HandleArticleDisplay(
+      {Key? key, required this.articles, required this.index})
+      : super(key: key);
 
-  final int _index;
-  final List<int> _articles;
+  final int index;
+  final List<int> articles;
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Article>(
-      future: getArticle(_articles[_index]),
+      future: getArticle(articles[index]),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data.title != null) {

@@ -140,7 +140,7 @@ class _DisplayArticleState extends State<DisplayArticle> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${widget.snapshot.data!.by} · ${formatDate(widget.snapshot.data!.time)}',
+              '${widget.snapshot.data!.by} · ${formatDate(milliseconds: widget.snapshot.data!.time)}',
               style: const TextStyle(fontSize: 14),
             ),
             Text(widget.snapshot.data!.title),
