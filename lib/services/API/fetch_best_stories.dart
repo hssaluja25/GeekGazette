@@ -7,7 +7,9 @@ Future<List<int>> getBestStories() async {
     final Uri uri =
         Uri.parse('https://hacker-news.firebaseio.com/v0/beststories.json');
     final response = await http.get(uri);
-    return fromJson2List(response.body);
+    List<int> originalList = fromJson2List(response.body);
+    // We would be displaying best 50 stories instead of best 200.
+    return originalList.sublist(0, 50);
   } on SocketException catch (error) {
     throw const SocketException('Error getting best stories');
   } on HttpException catch (error) {
