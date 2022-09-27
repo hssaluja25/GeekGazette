@@ -9,7 +9,7 @@ Future<List<int>> getBestStories() async {
     final response = await http.get(uri);
     List<int> originalList = fromJson2List(response.body);
     // We would be displaying best 50 stories instead of best 200.
-    return originalList.sublist(0, 50);
+    return originalList.sublist(0, 10);
   } on SocketException catch (error) {
     throw const SocketException('Error getting best stories');
   } on HttpException catch (error) {

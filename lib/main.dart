@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 // 👇 Needed to change the status bar color.
 import 'package:flutter/services.dart';
@@ -18,7 +19,9 @@ class HackerNews extends StatefulWidget {
   const HackerNews({Key? key}) : super(key: key);
 
   @override
-  State<HackerNews> createState() => _HackerNewsState();
+  State<HackerNews> createState() {
+    return _HackerNewsState();
+  }
 }
 
 class _HackerNewsState extends State<HackerNews> {
