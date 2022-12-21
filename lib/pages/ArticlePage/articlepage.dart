@@ -1,24 +1,39 @@
 import 'package:flutter/material.dart';
-import 'Custom Widgets/handle_article_display.dart';
-import '../../services/API/fetch_article.dart';
-import 'Custom Widgets/display_article2.dart';
+import 'package:hackernews/pages/error/errorpage.dart';
+import '../../services/API/fetch_articles.dart';
+import '../../src/article.dart';
+import 'display_all_articles.dart';
 
+/// Finds individual story from the id of best stories
 class ArticlePage extends StatefulWidget {
-  final List<int> articlesId;
-  const ArticlePage(this.articlesId, {Key? key}) : super(key: key);
+  final List<int> articles;
+  late final List<int> first10Articles;
+  late Future<List<Article>> fetchCollectionOfArticles;
+
+  ArticlePage(this.articles, {Key? key}) : super(key: key) {
+    first10Articles = articles.sublist(0, 10);
+    fetchCollectionOfArticles = getAllArticles(first10Articles);
+  }
 
   @override
   State<ArticlePage> createState() => _ArticlePageState();
 }
 
 class _ArticlePageState extends State<ArticlePage> {
+  onPress() async {
+    setState(() {
+      widget.fetchCollectionOfArticles = getAllArticles(widget.first10Articles);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
     return FutureBuilder(
-      // returns a List<Article>
-      future: getAllArticles(widget.articlesId),
+      future: widget.fetchCollectionOfArticles,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
+          print('Inside snapshot.hasData of Article Page');
           return CustomScrollView(
             slivers: [
               const SliverAppBar(
@@ -35,73 +50,23 @@ class _ArticlePageState extends State<ArticlePage> {
                 floating: true,
               ),
               SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  childCount: widget.articlesId.length,
+                delegate: SliverChildListDelegate(
                   addAutomaticKeepAlives: true,
-                  (context, index) {
-                    int articleIdAtIndex = widget.articlesId[index];
-                    return Dismissible(
-                      key: ValueKey(widget.articlesId[index]),
-                      background: Container(
-                        color: Colors.yellow,
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/icons/trash.gif',
-                                height: 40,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      secondaryBackground: Container(
-                        color: Colors.yellow,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Image.asset(
-                                'assets/icons/trash.gif',
-                                height: 40,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      onDismissed: (DismissDirection direction) {
-                        setState(() => widget.articlesId.removeAt(index));
-                        SnackBar snackbar = SnackBar(
-                          content: const Text('Removed'),
-                          action: SnackBarAction(
-                            label: 'Undo',
-                            onPressed: () {
-                              setState(() => widget.articlesId
-                                  .insert(index, articleIdAtIndex));
-                            },
-                          ),
-                        );
-                        ScaffoldMessenger.of(context)
-                          ..removeCurrentSnackBar()
-                          ..showSnackBar(snackbar);
-                      },
-                      // ! Title checking to be done.
-                      child: DisplayArticle(snapshot.data, index),
-                      // child: HandleArticleDisplay(
-                      //     articles: widget.articlesId, index: index),
-                    );
-                  },
+
+                  /// We pass a list of [Article]s to this helper function
+                  displayCollectionOfArticles(snapshot.data, context),
                 ),
               ),
             ],
           );
-        } else if (snapshot.hasError) {
-          return const Center(child: Text('Error error'));
+        } else if (snapshot.connectionState == ConnectionState.done &&
+            snapshot.hasError) {
+          print(snapshot.error);
+          return ErrorPage(height: height, onPress: onPress);
         } else {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: Image.asset('assets/images/loading.gif'),
+          );
         }
       },
     );

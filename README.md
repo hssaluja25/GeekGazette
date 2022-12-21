@@ -15,9 +15,9 @@ TODO INSERT GIF HERE
 
 ## Features
 
+* Dismiss an article by swiping on it
 * Uses Flutter 3.0
 * Displays best stories on Hacker News
-* Supports pull down to refresh
 
 ## Contributing
 

@@ -11,11 +11,11 @@ Future<Comment> getComment(int id) async {
         Uri.parse('https://hacker-news.firebaseio.com/v0/item/$id.json');
     final response = await http.get(myUri);
     return fromJson2Comment(response.body);
-  } on SocketException catch (error) {
+  } on SocketException catch (_) {
     throw SocketException('Error getting comment: $id');
-  } on HttpException catch (error) {
+  } on HttpException catch (_) {
     throw HttpException('Error getting comment: $id');
-  } on Exception catch (error) {
+  } on Exception catch (_) {
     throw Exception('Error getting comment: $id');
   }
 }

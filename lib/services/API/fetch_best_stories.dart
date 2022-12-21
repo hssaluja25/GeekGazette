@@ -1,20 +1,16 @@
 import 'dart:io';
+import 'package:hackernews/services/json_parsing.dart';
 import 'package:http/http.dart' as http;
-import '../json_parsing.dart';
 
+/// Returns a list of integers representing the id of best stories
 Future<List<int>> getBestStories() async {
   try {
     final Uri uri =
         Uri.parse('https://hacker-news.firebaseio.com/v0/beststories.json');
     final response = await http.get(uri);
-    List<int> originalList = fromJson2List(response.body);
-    // We would be displaying best 50 stories instead of best 200.
-    return originalList.sublist(0, 10);
-  } on SocketException catch (error) {
-    throw const SocketException('Error getting best stories');
-  } on HttpException catch (error) {
-    throw const HttpException('Error getting best stories');
-  } on Exception catch (error) {
-    throw Exception('Error getting best stories');
+    List<int> listOfBestStories = fromJson2List(response.body);
+    return listOfBestStories.sublist(0, 50);
+  } on SocketException catch (_) {
+    throw const SocketException('Check your internet connection');
   }
 }
