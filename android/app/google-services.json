@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "854096079288",
+    "project_id": "hn-read",
+    "storage_bucket": "hn-read.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854096079288:android:69c345bdabafab51c0074d",
+        "android_client_info": {
+          "package_name": "com.example.hackernews"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854096079288-iq0crsh31ihid2k8up0e4qsa07oco2iv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGKqfrLwobLQxSfTcv-YHgIWCk8xjAWjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "854096079288-iq0crsh31ihid2k8up0e4qsa07oco2iv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

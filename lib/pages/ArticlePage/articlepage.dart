@@ -11,12 +11,14 @@ class ArticlePage extends StatefulWidget {
   late final List<int> first10Articles;
   late Future<List<Article>> fetchCollectionOfArticles;
   SharedPreferences prefs;
-  List<String> bookmarks;
+  Map<String, String> bookmarks;
+  final String uid;
 
   ArticlePage(
       {required this.articles,
       required this.bookmarks,
       required this.prefs,
+      required this.uid,
       Key? key})
       : super(key: key) {
     first10Articles = articles.sublist(0, 10);
@@ -67,6 +69,7 @@ class _ArticlePageState extends State<ArticlePage> {
                     context: context,
                     bookmarks: widget.bookmarks,
                     prefs: widget.prefs,
+                    uid: widget.uid,
                   ),
                 ),
               ),

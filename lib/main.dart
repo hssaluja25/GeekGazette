@@ -1,13 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 // 👇 Needed to change the status bar color.
 import 'package:flutter/services.dart';
 import 'package:hackernews/pages/error/errorpage.dart';
+import 'package:hackernews/services/create_uid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
 import 'pages/ArticlePage/articlepage.dart';
 import '../../services/API/fetch_best_stories.dart';
 import 'dart:io';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     const MaterialApp(
       title: 'Reader',
@@ -33,30 +41,24 @@ class _HackerNewsState extends State<HackerNews> {
 
   /// Fetches id of best stories and passes them to the ```ArticlesPage```
   Future<List<int>> fetchBestStoriesFuture = getBestStories();
-
-  // This function defines what to do when user presses the Refresh button.
-  onPress() async {
-    try {
-      final result = await InternetAddress.lookup('example.com')
-          .timeout(const Duration(seconds: 2));
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        setState(() {
-          fetchBestStoriesFuture = getBestStories();
-        });
-      }
-    } on SocketException catch (_) {}
-  }
-
   late SharedPreferences prefs;
-  late List<String> bookmarks;
-  // Creating SharedPreferences instance and accessing bookmarks from storage
+  Map<String, String> bookmarks = <String, String>{};
+  late String uid;
+  // Create SharedPreferences instance to access user id
   // They need to be passed to ArticlePage
   @override
   void initState() {
     super.initState();
     () async {
       prefs = await SharedPreferences.getInstance();
-      bookmarks = prefs.getStringList('bookmarks') ?? [];
+      uid = prefs.getString('uid') ?? generateState(length: 20, prefs: prefs);
+      // Read bookmark of user from Firestore
+      final user = FirebaseFirestore.instance.collection('users').doc(uid);
+      final snapshot = await user.get();
+      if (snapshot.exists) {
+        bookmarks =
+            Map<String, String>.from(snapshot.data() ?? <String, String>{});
+      }
     }();
   }
 
@@ -76,6 +78,7 @@ class _HackerNewsState extends State<HackerNews> {
                   articles: snapshot.data,
                   bookmarks: bookmarks,
                   prefs: prefs,
+                  uid: uid,
                 ),
                 Container(),
               ],
@@ -116,5 +119,18 @@ class _HackerNewsState extends State<HackerNews> {
         }
       },
     );
+  }
+
+  // This function defines what to do when user presses the Refresh button.
+  onPress() async {
+    try {
+      final result = await InternetAddress.lookup('example.com')
+          .timeout(const Duration(seconds: 2));
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          fetchBestStoriesFuture = getBestStories();
+        });
+      }
+    } on SocketException catch (_) {}
   }
 }

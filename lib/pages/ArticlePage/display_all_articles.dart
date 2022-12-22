@@ -6,11 +6,13 @@ import '../../src/article.dart';
 
 /// Accepts a list of [Article]s and returns a list of Widgets
 /// Invokes [DisplayArticle] helper function
-List<Widget> displayCollectionOfArticles(
-    {required List<String> bookmarks,
-    required SharedPreferences prefs,
-    required List<Article> articles,
-    required BuildContext context}) {
+List<Widget> displayCollectionOfArticles({
+  required Map<String, String> bookmarks,
+  required SharedPreferences prefs,
+  required List<Article> articles,
+  required BuildContext context,
+  required String uid,
+}) {
   double width = MediaQuery.of(context).size.width;
   double height = MediaQuery.of(context).size.height;
   List<Widget> result = [];
@@ -52,6 +54,7 @@ List<Widget> displayCollectionOfArticles(
           article: articles[i],
           bookmarks: bookmarks,
           prefs: prefs,
+          uid: uid,
         ),
       ),
     );
