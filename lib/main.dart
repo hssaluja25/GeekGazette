@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // 👇 Needed to change the status bar color.
 import 'package:flutter/services.dart';
 import 'package:hackernews/pages/error/errorpage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/ArticlePage/articlepage.dart';
 import '../../services/API/fetch_best_stories.dart';
 import 'dart:io';
@@ -46,6 +47,19 @@ class _HackerNewsState extends State<HackerNews> {
     } on SocketException catch (_) {}
   }
 
+  late SharedPreferences prefs;
+  late List<String> bookmarks;
+  // Creating SharedPreferences instance and accessing bookmarks from storage
+  // They need to be passed to ArticlePage
+  @override
+  void initState() {
+    super.initState();
+    () async {
+      prefs = await SharedPreferences.getInstance();
+      bookmarks = prefs.getStringList('bookmarks') ?? [];
+    }();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -58,11 +72,14 @@ class _HackerNewsState extends State<HackerNews> {
             body: IndexedStack(
               index: _currentTab,
               children: [
-                ArticlePage(snapshot.data),
+                ArticlePage(
+                  articles: snapshot.data,
+                  bookmarks: bookmarks,
+                  prefs: prefs,
+                ),
                 Container(),
               ],
             ),
-            // body: _currentTab == 1 ? Container() : ArticlePage(snapshot.data),
             bottomNavigationBar: BottomNavigationBar(
               showUnselectedLabels: false,
               showSelectedLabels: false,

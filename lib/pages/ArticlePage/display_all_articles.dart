@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:hackernews/pages/ArticlePage/Custom%20Widgets/display_article.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../src/article.dart';
 
 /// Accepts a list of [Article]s and returns a list of Widgets
 /// Invokes [DisplayArticle] helper function
 List<Widget> displayCollectionOfArticles(
-    List<Article> articles, BuildContext context) {
+    {required List<String> bookmarks,
+    required SharedPreferences prefs,
+    required List<Article> articles,
+    required BuildContext context}) {
   double width = MediaQuery.of(context).size.width;
   double height = MediaQuery.of(context).size.height;
   List<Widget> result = [];
@@ -44,7 +48,11 @@ List<Widget> displayCollectionOfArticles(
             ),
           ),
         ),
-        child: DisplayArticle(articles[i]),
+        child: DisplayArticle(
+          article: articles[i],
+          bookmarks: bookmarks,
+          prefs: prefs,
+        ),
       ),
     );
   }

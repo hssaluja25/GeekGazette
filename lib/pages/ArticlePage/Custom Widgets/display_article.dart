@@ -12,9 +12,16 @@ import '../../CommentsPage/commentpage.dart';
 
 class DisplayArticle extends StatefulWidget {
   final Article article;
+  final List<String> bookmarks;
+  SharedPreferences prefs;
 
   /// Allows bookmarking, opening the URL, sharing post and displaying the comments
-  const DisplayArticle(this.article, {Key? key}) : super(key: key);
+  DisplayArticle(
+      {required this.article,
+      required this.prefs,
+      required this.bookmarks,
+      Key? key})
+      : super(key: key);
 
   @override
   State<DisplayArticle> createState() => _DisplayArticleState();
@@ -22,49 +29,35 @@ class DisplayArticle extends StatefulWidget {
 
 class _DisplayArticleState extends State<DisplayArticle> {
   bool _isBookmarked = false;
-  SharedPreferences? prefs;
-  static const String key = 'bookmarks';
 
-  /// Initialize the _isBookmarked instance variable for an article on app (re)start
   @override
   void initState() {
-    () async {
-      prefs = await SharedPreferences.getInstance();
-      final List<String> bookmarkedArticles = prefs?.getStringList(key) ?? [];
-      if (bookmarkedArticles.contains('${widget.article.id}')) {
-        if (mounted) {
-          setState(() => _isBookmarked = true);
-        }
-      }
-    }();
+    _isBookmarked = widget.bookmarks.contains(widget.article.id.toString());
     super.initState();
   }
 
   /// Triggered when the user presses on the bookmark iconbutton
   /// If previously bookmarked -> now removed.
   /// If not bookmarked previously -> now bookmarked.
-  /// Also changes the icon color.
   handleBookmarking() async {
-    final Set<String> bookmarkedArticles =
-        Set.from(prefs?.getStringList(key) ?? []);
-    print('Before press, bookmarkedArticles = $bookmarkedArticles');
+    print('Before press, bookmarks = ${widget.bookmarks}');
 
     if (!_isBookmarked) {
       // Add to bookmark
-      bookmarkedArticles.add('${widget.article.id}');
-      prefs?.setStringList(key, bookmarkedArticles.toList());
+      widget.bookmarks.add('${widget.article.id}');
+      widget.prefs.setStringList('bookmarks', widget.bookmarks.toList());
       if (mounted) {
         setState(() => _isBookmarked = true);
       }
     } else {
       // Remove from bookmarks
-      bookmarkedArticles.remove('${widget.article.id}');
-      prefs?.setStringList(key, bookmarkedArticles.toList());
+      widget.bookmarks.remove('${widget.article.id}');
+      widget.prefs.setStringList('bookmarks', widget.bookmarks.toList());
       if (mounted) {
         setState(() => _isBookmarked = false);
       }
     }
-    print('After, bookmarkedArticles = $bookmarkedArticles');
+    print('After, bookmarks = ${widget.bookmarks}');
   }
 
   /// When the user presses on the ListTile, the associated URL is opened.

@@ -1,32 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../ArticlePage/Custom Widgets/handle_article_display.dart';
 
-class BookmarkPage extends StatefulWidget {
-  const BookmarkPage({Key? key}) : super(key: key);
+import '../ArticlePage/display_all_articles.dart';
 
-  @override
-  State<BookmarkPage> createState() => _BookmarkPageState();
-}
-
-class _BookmarkPageState extends State<BookmarkPage> {
-  List<int> _bookmarksId = [];
-
-  /// Initialize _bookmarksId from memory
-  @override
-  void initState() {
-    () async {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      const String key = 'bookmarks';
-      // Shared Preferences stores a StringList, so we convert it to List<int>
-      final List<String> bookmarkedArticles = prefs.getStringList(key) ?? [];
-      List<int> bookmarksId = bookmarkedArticles.map(int.parse).toList();
-      if (mounted) {
-        setState(() => _bookmarksId = bookmarksId);
-      }
-    }();
-    super.initState();
-  }
+class BookmarkPage extends StatelessWidget {
+  List<String> bookmarks;
+  SharedPreferences prefs;
+  const BookmarkPage({required this.bookmarks, required this.prefs, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +27,16 @@ class _BookmarkPageState extends State<BookmarkPage> {
           backgroundColor: Colors.yellow,
         ),
         SliverList(
-          delegate: SliverChildBuilderDelegate(
+          delegate: SliverChildListDelegate(
             addAutomaticKeepAlives: true,
-            childCount: _bookmarksId.length,
-            (BuildContext context, int index) =>
-                HandleArticleDisplay(articles: _bookmarksId, index: index),
+
+            /// We pass a list of [Article]s to this helper function
+            displayCollectionOfArticles(
+              articles: bookmarks,
+              context: context,
+              bookmarks: bookmarks,
+              prefs: prefs,
+            ),
           ),
         ),
       ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hackernews/pages/error/errorpage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/API/fetch_articles.dart';
 import '../../src/article.dart';
 import 'display_all_articles.dart';
@@ -9,8 +10,15 @@ class ArticlePage extends StatefulWidget {
   final List<int> articles;
   late final List<int> first10Articles;
   late Future<List<Article>> fetchCollectionOfArticles;
+  SharedPreferences prefs;
+  List<String> bookmarks;
 
-  ArticlePage(this.articles, {Key? key}) : super(key: key) {
+  ArticlePage(
+      {required this.articles,
+      required this.bookmarks,
+      required this.prefs,
+      Key? key})
+      : super(key: key) {
     first10Articles = articles.sublist(0, 10);
     fetchCollectionOfArticles = getAllArticles(first10Articles);
   }
@@ -54,7 +62,12 @@ class _ArticlePageState extends State<ArticlePage> {
                   addAutomaticKeepAlives: true,
 
                   /// We pass a list of [Article]s to this helper function
-                  displayCollectionOfArticles(snapshot.data, context),
+                  displayCollectionOfArticles(
+                    articles: snapshot.data,
+                    context: context,
+                    bookmarks: widget.bookmarks,
+                    prefs: widget.prefs,
+                  ),
                 ),
               ),
             ],
