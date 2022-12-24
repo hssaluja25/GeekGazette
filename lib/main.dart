@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 // 👇 Needed to change the status bar color.
 import 'package:flutter/services.dart';
+import 'package:hackernews/pages/BookmarksPage/bookmarkpage.dart';
 import 'package:hackernews/pages/error/errorpage.dart';
 import 'package:hackernews/services/create_uid.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,14 +39,14 @@ class HackerNews extends StatefulWidget {
 class _HackerNewsState extends State<HackerNews> {
   // To handle tab change
   int _currentTab = 0;
-
-  /// Fetches id of best stories and passes them to the ```ArticlesPage```
+  // Fetches id of best stories and passes them to the ArticlePage
   Future<List<int>> fetchBestStoriesFuture = getBestStories();
   late SharedPreferences prefs;
   Map<String, String> bookmarks = <String, String>{};
   late String uid;
+
   // Create SharedPreferences instance to access user id
-  // They need to be passed to ArticlePage
+  // It needs to be passed to ArticlePage
   @override
   void initState() {
     super.initState();
@@ -56,8 +57,10 @@ class _HackerNewsState extends State<HackerNews> {
       final user = FirebaseFirestore.instance.collection('users').doc(uid);
       final snapshot = await user.get();
       if (snapshot.exists) {
-        bookmarks =
-            Map<String, String>.from(snapshot.data() ?? <String, String>{});
+        setState(() {
+          bookmarks =
+              Map<String, String>.from(snapshot.data() ?? <String, String>{});
+        });
       }
     }();
   }
@@ -77,10 +80,13 @@ class _HackerNewsState extends State<HackerNews> {
                 ArticlePage(
                   articles: snapshot.data,
                   bookmarks: bookmarks,
+                  uid: uid,
                   prefs: prefs,
+                ),
+                BookmarkPage(
+                  bookmarks: bookmarks,
                   uid: uid,
                 ),
-                Container(),
               ],
             ),
             bottomNavigationBar: BottomNavigationBar(

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'dart:io';
@@ -12,52 +11,44 @@ import '../../../services/format_date.dart';
 import '../../../src/article.dart';
 import '../../CommentsPage/commentpage.dart';
 
-class DisplayArticle extends StatefulWidget {
+class CreateListtile extends StatefulWidget {
   final Article article;
   final Map<String, String> bookmarks;
-  SharedPreferences prefs;
   final String uid;
+  bool isBookmarked;
 
   /// Allows bookmarking, opening the URL, sharing post and displaying the comments
-  DisplayArticle(
+  CreateListtile(
       {required this.article,
-      required this.prefs,
       required this.bookmarks,
       required this.uid,
+      required this.isBookmarked,
       Key? key})
       : super(key: key);
 
   @override
-  State<DisplayArticle> createState() => _DisplayArticleState();
+  State<CreateListtile> createState() => _CreateListtileState();
 }
 
-class _DisplayArticleState extends State<DisplayArticle> {
-  bool _isBookmarked = false;
-
-  @override
-  void initState() {
-    _isBookmarked = widget.bookmarks.containsKey(widget.article.id.toString());
-    super.initState();
-  }
-
+class _CreateListtileState extends State<CreateListtile> {
   /// Triggered when the user presses on the bookmark iconbutton
   /// If previously bookmarked -> now removed.
   /// If not bookmarked previously -> now bookmarked.
   handleBookmarking() async {
-    if (!_isBookmarked) {
+    if (!widget.isBookmarked) {
       // Add to bookmark
       print('Adding : ${widget.article.id}');
       String json = jsonEncode(widget.article.toJson());
       widget.bookmarks['${widget.article.id}'] = json;
       if (mounted) {
-        setState(() => _isBookmarked = true);
+        setState(() => widget.isBookmarked = true);
       }
     } else {
       // Remove from bookmarks
       print('Removing: ${widget.article.id}');
       widget.bookmarks.remove('${widget.article.id}');
       if (mounted) {
-        setState(() => _isBookmarked = false);
+        setState(() => widget.isBookmarked = false);
       }
     }
     // Upload bookmarks map
@@ -156,7 +147,7 @@ class _DisplayArticleState extends State<DisplayArticle> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                  icon: _isBookmarked
+                  icon: widget.isBookmarked
                       ? const FaIcon(
                           FontAwesomeIcons.solidBookmark,
                           size: 20,

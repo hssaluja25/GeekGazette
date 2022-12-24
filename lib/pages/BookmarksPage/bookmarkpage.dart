@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../ArticlePage/display_all_articles.dart';
+import 'dart:convert';
+import '../../src/article.dart';
+import '../ArticlePage/Custom Widgets/create_listtile.dart';
 
 class BookmarkPage extends StatelessWidget {
-  List<String> bookmarks;
-  SharedPreferences prefs;
-  const BookmarkPage({required this.bookmarks, required this.prefs, Key? key})
-      : super(key: key);
+  Map<String, String> bookmarks;
+  final String uid;
+  late List<String> keys;
+  BookmarkPage({required this.uid, required this.bookmarks, Key? key})
+      : super(key: key) {
+    keys = bookmarks.keys.toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +30,19 @@ class BookmarkPage extends StatelessWidget {
           backgroundColor: Colors.yellow,
         ),
         SliverList(
-          delegate: SliverChildListDelegate(
+          delegate: SliverChildBuilderDelegate(
+            childCount: bookmarks.length,
             addAutomaticKeepAlives: true,
-
-            /// We pass a list of [Article]s to this helper function
-            displayCollectionOfArticles(
-              articles: bookmarks,
-              context: context,
-              bookmarks: bookmarks,
-              prefs: prefs,
-            ),
+            (context, index) {
+              String key = keys[index];
+              Article a = Article.fromJson(jsonDecode(bookmarks[key] ?? ''));
+              return CreateListtile(
+                article: a,
+                bookmarks: bookmarks,
+                uid: uid,
+                isBookmarked: true,
+              );
+            },
           ),
         ),
       ],
