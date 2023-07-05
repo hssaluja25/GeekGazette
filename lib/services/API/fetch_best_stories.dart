@@ -3,7 +3,7 @@ import 'package:hackernews/services/json_parsing.dart';
 import 'package:http/http.dart' as http;
 
 /// Returns a list of integers representing the id of best stories
-Future<List<int>> getBestStories() async {
+Future<List<int>> fetchBestStories() async {
   try {
     final Uri uri =
         Uri.parse('https://hacker-news.firebaseio.com/v0/beststories.json');

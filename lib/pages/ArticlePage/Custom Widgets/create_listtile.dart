@@ -14,14 +14,12 @@ import '../../CommentsPage/commentpage.dart';
 class CreateListtile extends StatefulWidget {
   final Article article;
   final Map<String, String> bookmarks;
-  final String uid;
   bool isBookmarked;
 
   /// Allows bookmarking, opening the URL, sharing post and displaying the comments
   CreateListtile(
       {required this.article,
       required this.bookmarks,
-      required this.uid,
       required this.isBookmarked,
       Key? key})
       : super(key: key);
@@ -52,7 +50,9 @@ class _CreateListtileState extends State<CreateListtile> {
       }
     }
     // Upload bookmarks map
-    final user = FirebaseFirestore.instance.collection('users').doc(widget.uid);
+    final user = FirebaseFirestore.instance
+        .collection('users')
+        .doc('71XZLVMJPK7MbKPh5Ipz');
     await user.set(widget.bookmarks);
   }
 
@@ -66,7 +66,7 @@ class _CreateListtileState extends State<CreateListtile> {
         if (await canLaunchUrl(urlOfArticle)) {
           launchUrl(urlOfArticle);
         } else {
-          print(
+          debugPrint(
               'The URL Launcher cannot launch the URL: ${widget.article.url}.  This happens on post like Ask HN.');
           // We will open the hackernews page so that the user can read the post
           // description too, not just the title
